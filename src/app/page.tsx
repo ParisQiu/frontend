@@ -27,8 +27,8 @@ const ThreeDText: FC = () => (
   </Text>
 );
 
-// Users page component
-const UsersPage: FC = (): JSX.Element => {
+// Homepage component
+const Page: FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -64,7 +64,7 @@ const UsersPage: FC = (): JSX.Element => {
         <div className="hero-overlay">
           <h1 className="hero-title">StudySmart</h1>
           <p className="hero-subtitle">
-            Empowering students to study smarter – integrated tools for resource management, collaboration, and excellence.
+            Empowering students to study smarter – integrated tools for resource management, collaboration, and academic excellence.
           </p>
           <p className="text-lg italic text-[#19c4c4] mt-2">
             Study smart, succeed together.
@@ -101,4 +101,4 @@ const UsersPage: FC = (): JSX.Element => {
   );
 };
 
-export default UsersPage;
+export default Page;
