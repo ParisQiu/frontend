@@ -1,46 +1,57 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function SignupPage() {
+interface SignupForm {
+  username: string;
+  email: string;
+  password: string;
+}
+
+const SignupPage: FC = () => {
   const router = useRouter();
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<SignupForm>({
     username: "",
     email: "",
     password: "",
   });
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = <K extends keyof SignupForm>(
+    field: K,
+    value: SignupForm[K]
+  ) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      const res = await fetch("https://studysmarterapp.onrender.com/api/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const res = await fetch(
+        "https://studysmarterapp.onrender.com/api/signup",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        }
+      );
 
-      const data = await res.json();
-      console.log(data); // Log API response (including token)
+      const data: { message?: string } = await res.json();
+      console.log(data);
 
       if (res.status === 201) {
         router.push("/");
       } else {
         setError(data.message || "Signup failed");
       }
-    } catch (err) {
-      setError("Network error");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Network error");
     } finally {
       setLoading(false);
     }
@@ -49,8 +60,12 @@ export default function SignupPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-white">
       <div className="w-full px-6 flex flex-col items-center">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-4">Study Smarter</h1>
-        <p className="text-center text-gray-600 mb-16">Create an account to get started</p>
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-4">
+          Study Smarter
+        </h1>
+        <p className="text-center text-gray-600 mb-16">
+          Create an account to get started
+        </p>
 
         <form onSubmit={handleSubmit} className="w-full max-w-xs space-y-10">
           <div className="space-y-8">
@@ -58,7 +73,7 @@ export default function SignupPage() {
               <input
                 name="username"
                 value={form.username}
-                onChange={handleChange}
+                onChange={(e) => handleChange("username", e.target.value)}
                 type="text"
                 placeholder="Username"
                 required
@@ -70,7 +85,7 @@ export default function SignupPage() {
               <input
                 name="email"
                 value={form.email}
-                onChange={handleChange}
+                onChange={(e) => handleChange("email", e.target.value)}
                 type="email"
                 placeholder="Email"
                 required
@@ -82,7 +97,7 @@ export default function SignupPage() {
               <input
                 name="password"
                 value={form.password}
-                onChange={handleChange}
+                onChange={(e) => handleChange("password", e.target.value)}
                 type="password"
                 placeholder="Password"
                 required
@@ -91,7 +106,9 @@ export default function SignupPage() {
             </div>
           </div>
 
-          {error && <p className="text-red-600 text-sm text-center mt-4">{error}</p>}
+          {error && (
+            <p className="text-red-600 text-sm text-center mt-4">{error}</p>
+          )}
 
           <div className="mt-14 space-y-8">
             <button
@@ -103,7 +120,7 @@ export default function SignupPage() {
             </button>
 
             <div className="text-center text-lg text-gray-600">
-              Already have an account?{" "}
+              Already have an account?{' '}
               <Link href="/login" className="text-[#19c4c4] font-medium">
                 Log In
               </Link>
@@ -113,4 +130,6 @@ export default function SignupPage() {
       </div>
     </div>
   );
-}
+};
+
+export default SignupPage;
