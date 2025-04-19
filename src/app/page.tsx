@@ -4,16 +4,16 @@ import React, { Suspense, FC, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
 import Link from 'next/link';
-import '../styles/homepage.css';
+import '../../styles/homepage.css';
 
-// Define shape of user data
+// Shape of user data from API
 interface User {
   id: number;
   username: string;
   email: string;
 }
 
-// 统一使用提夫尼蓝 #19c4c4
+// 3D Text component using Tiffany Blue
 const ThreeDText: FC = () => (
   <Text
     position={[0, 0, 0]}
@@ -27,7 +27,8 @@ const ThreeDText: FC = () => (
   </Text>
 );
 
-const Page: FC = (): JSX.Element => {
+// Users page component
+const UsersPage: FC = (): JSX.Element => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -40,12 +41,11 @@ const Page: FC = (): JSX.Element => {
         const data: User[] = await res.json();
         setUsers(data);
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+        setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {
         setLoading(false);
       }
     };
-
     fetchUsers();
   }, []);
 
@@ -64,10 +64,10 @@ const Page: FC = (): JSX.Element => {
         <div className="hero-overlay">
           <h1 className="hero-title">StudySmart</h1>
           <p className="hero-subtitle">
-            Empowering students to study smarter – with integrated tools for resource management, collaboration, and academic excellence.
+            Empowering students to study smarter – integrated tools for resource management, collaboration, and excellence.
           </p>
           <p className="text-lg italic text-[#19c4c4] mt-2">
-            Study smart, success together.
+            Study smart, succeed together.
           </p>
           <Link href="/docs" className="api-docs-link text-[#19c4c4] hover:underline">
             View Live API Documentation
@@ -75,65 +75,21 @@ const Page: FC = (): JSX.Element => {
         </div>
       </section>
 
-      {/* About Section */}
-      <section className="about-section">
-        <div className="about-content">
-          <h2 className="section-heading">About StudySmart</h2>
-          <p className="section-description">
-            StudySmart is your ultimate platform for academic success. Our system combines cutting-edge technology with a user-friendly interface to help you manage your study resources, create collaborative study rooms, and get real-time updates from our robust API.
-          </p>
-          <div className="features-grid">
-            <div className="card">
-              <h3 className="card-title">User Profiles</h3>
-              <p className="card-text">
-                Access personalized dashboards and monitor your academic progress with ease.
-              </p>
-            </div>
-            <div className="card">
-              <h3 className="card-title">Study Rooms</h3>
-              <p className="card-text">
-                Join and create collaborative study rooms to engage with peers and share resources.
-              </p>
-            </div>
-            <div className="card">
-              <h3 className="card-title">Interactive Posts</h3>
-              <p className="card-text">
-                Express ideas, share insights, and discuss topics in real-time with interactive posts.
-              </p>
-            </div>
-            <div className="card">
-              <h3 className="card-title">Media Sharing</h3>
-              <p className="card-text">
-                Enhance discussions by uploading and sharing images, videos, and more.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* API Data Section */}
+      {/* Users Data Section */}
       <section className="api-data-section">
         <div className="api-data-container">
-          <h2 className="section-heading">Live API Data</h2>
-          {loading && <p>Loading user data...</p>}
-          {error && <p className="text-[#19c4c4]">Error: {error}</p>}
+          <h2 className="section-heading">Registered Users</h2>
+          {loading && <p>Loading users...</p>}
+          {error && <p className="text-red-600">Error: {error}</p>}
           {!loading && !error && (
-            <>
-              <p className="api-data-label">
-                Data from: <strong>GET /api/users</strong> (<code>users</code> state)
-              </p>
-              <ul className="api-data-list">
-                {users.map(user => (
-                  <li key={user.id}>
-                    {user.username} ({user.email})
-                  </li>
-                ))}
-              </ul>
-            </>
+            <ul className="api-data-list">
+              {users.map((u) => (
+                <li key={u.id}>
+                  {u.username} ({u.email})
+                </li>
+              ))}
+            </ul>
           )}
-          <p className="api-data-note">
-            This section dynamically renders live data fetched from our backend API.
-          </p>
         </div>
       </section>
 
@@ -145,4 +101,4 @@ const Page: FC = (): JSX.Element => {
   );
 };
 
-export default Page;
+export default UsersPage;
