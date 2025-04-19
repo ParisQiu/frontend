@@ -4,7 +4,7 @@ import React, { Suspense, FC, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
 import Link from 'next/link';
-import '../../styles/homepage.css';
+import '../styles/homepage.css';
 
 // Shape of user data from API
 interface User {
