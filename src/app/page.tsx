@@ -1,41 +1,46 @@
 'use client';
 
-import React, { Suspense, useState, useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Text } from "@react-three/drei";
-import Link from "next/link";
-import "../styles/homepage.css";
+import React, { Suspense, FC, useState, useEffect } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Text } from '@react-three/drei';
+import Link from 'next/link';
+import '../styles/homepage.css';
+
+// Define shape of user data
+interface User {
+  id: number;
+  username: string;
+  email: string;
+}
 
 // 统一使用提夫尼蓝 #19c4c4
-const ThreeDText = () => {
-  return (
-    <Text
-      position={[0, 0, 0]}
-      fontSize={1.8}
-      color="#19c4c4"
-      anchorX="center"
-      anchorY="middle"
-      rotation={[0, 0.4, 0]}
-    >
-      StudySmart
-    </Text>
-  );
-};
+const ThreeDText: FC = () => (
+  <Text
+    position={[0, 0, 0]}
+    fontSize={1.8}
+    color="#19c4c4"
+    anchorX="center"
+    anchorY="middle"
+    rotation={[0, 0.4, 0]}
+  >
+    StudySmart
+  </Text>
+);
 
-export default function Page() {
-  const [users, setUsers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+const Page: FC = (): JSX.Element => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchUsers = async (): Promise<void> => {
       try {
-        const res = await fetch("https://studysmarterapp.onrender.com/api/users");
-        if (!res.ok) throw new Error("Failed to fetch users");
-        const data = await res.json();
+        const res = await fetch('https://studysmarterapp.onrender.com/api/users');
+        if (!res.ok) throw new Error('Failed to fetch users');
+        const data: User[] = await res.json();
         setUsers(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
       } finally {
         setLoading(false);
       }
@@ -106,8 +111,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Removed Signup Form Section */}
-
       {/* API Data Section */}
       <section className="api-data-section">
         <div className="api-data-container">
@@ -140,4 +143,6 @@ export default function Page() {
       </footer>
     </main>
   );
-}
+};
+
+export default Page;
