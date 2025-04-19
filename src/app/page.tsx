@@ -69,7 +69,7 @@ const Page: FC = () => {
           <p className="text-lg italic text-[#19c4c4] mt-2">
             Study smart, succeed together.
           </p>
-          <Link href="/docs" className="api-docs-link text-[#19c4c4] hover:underline">
+          <Link href="https://studysmarterapp.onrender.com/docs/" className="api-docs-link text-[#19c4c4] hover:underline">
             View Live API Documentation
           </Link>
         </div>
