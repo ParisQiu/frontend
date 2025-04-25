@@ -34,9 +34,13 @@ const SignupPage: FC = () => {
 
     try {
       const res = await fetch(
+<<<<<<< HEAD
         // "https://studysmarterapp.onrender.com/api/signup",
         "http://localhost:5000/api/signup", 
 
+=======
+        "https://studysmarterapp.onrender.com/api/signup",
+>>>>>>> 08a84bd23eb09b0cb7937a71ffec793637fafe0f
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -44,8 +48,13 @@ const SignupPage: FC = () => {
         }
       );
 
+<<<<<<< HEAD
       const data = await res.json();
       console.log("✅ Full signup response:", data);
+=======
+      const data: { message?: string } = await res.json();
+      console.log(data);
+>>>>>>> 08a84bd23eb09b0cb7937a71ffec793637fafe0f
 
       if (res.status === 201) {
         if (!data.user || !data.user.username) {
@@ -132,7 +141,7 @@ const SignupPage: FC = () => {
             </button>
 
             <div className="text-center text-lg text-gray-600">
-              Already have an account?{" "}
+              Already have an account?{' '}
               <Link href="/login" className="text-[#19c4c4] font-medium">
                 Log In
               </Link>
