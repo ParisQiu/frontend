@@ -40,6 +40,7 @@ export default function LoginPage() {
       });
 
       const data = await res.json();
+      console.log("Login response:", data); // ✅ 调试信息
 
       if (!res.ok) {
         setError(data.message || "Login failed");
@@ -47,7 +48,15 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/");
+      // ✅ 保存 token 和用户名
+      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("username", data.user.username);
+
+      // router.push("/");
+      // window.location.reload(); // 👈 Force layout to re-run useEffect
+      window.location.href = "/";
+
+
     } catch (err) {
       setError("Network error");
     } finally {

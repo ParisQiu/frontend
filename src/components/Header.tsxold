@@ -1,0 +1,95 @@
+'use client';
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import CreateRoomModal from "./CreateRoomModal";
+
+export default function Header() {
+  const pathname = usePathname();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const storedUsername = localStorage.getItem("username");
+
+    if (token && storedUsername) {
+      setIsLoggedIn(true);
+      setUsername(storedUsername);
+    }
+  }, []);
+
+  const hideAuthLinks = pathname === "/login" || pathname === "/signup";
+
+  const handlePostClick = () => {
+    if (isLoggedIn) {
+      setShowModal(true);
+    } else {
+      alert("You must be logged in to create a study room. Redirecting to login...");
+      window.location.href = "/login";
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    location.reload();
+  };
+
+  return (
+    <header className="flex justify-between items-center px-6 py-4 bg-white shadow-md">
+      <h1 className="text-xl font-bold text-tiffany">StudySmart</h1>
+
+      {!hideAuthLinks && (
+        <nav className="flex items-center space-x-6">
+          {isLoggedIn && (
+            <div
+              className="relative"
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
+              <button
+                onClick={handlePostClick}
+                className="text-xl p-2 rounded-full border border-tiffany hover:bg-tiffany hover:text-white transition"
+                aria-label="Create"
+              >
+                ✏️
+              </button>
+              {showTooltip && (
+                <div className="absolute -bottom-9 left-1/2 -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded-md shadow-lg whitespace-nowrap">
+                  Create Study Room
+                </div>
+              )}
+            </div>
+          )}
+
+          {isLoggedIn ? (
+            <div className="flex items-center space-x-3">
+              <span className="text-tiffany font-semibold">Hi, {username}</span>
+              <button
+                onClick={handleLogout}
+                className="text-tiffany font-semibold border border-tiffany px-3 py-1 rounded-md hover:bg-tiffany hover:text-white"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <>
+              <Link href="/login" className="text-tiffany font-semibold hover:underline">
+                Log In
+              </Link>
+              <Link href="/signup" className="text-tiffany font-semibold hover:underline">
+                Sign Up
+              </Link>
+            </>
+          )}
+        </nav>
+      )}
+
+      {showModal && <CreateRoomModal onClose={() => setShowModal(false)} />}
+    </header>
+  );
+}
